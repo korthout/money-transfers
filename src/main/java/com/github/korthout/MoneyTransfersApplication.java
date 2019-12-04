@@ -1,6 +1,6 @@
 package com.github.korthout;
 
-import com.github.korthout.db.ArrayListTransactionStore;
+import com.github.korthout.db.VavrListTransactionStore;
 import com.github.korthout.resources.TransactionResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -19,13 +19,13 @@ public class MoneyTransfersApplication extends Application<MoneyTransfersConfigu
 
     @Override
     public void initialize(final Bootstrap<MoneyTransfersConfiguration> bootstrap) {
-
+        // nothing to init
     }
 
     @Override
     public void run(final MoneyTransfersConfiguration configuration,
                     final Environment environment) {
-        environment.jersey().register(new TransactionResource(new ArrayListTransactionStore()));
+        environment.jersey().register(new TransactionResource(new VavrListTransactionStore()));
     }
 
 }

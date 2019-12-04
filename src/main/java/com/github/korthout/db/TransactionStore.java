@@ -2,7 +2,6 @@ package com.github.korthout.db;
 
 import com.github.korthout.api.Transaction;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,24 +13,24 @@ public interface TransactionStore {
      */
     int add(Transaction tx);
 
+    /**
+     * Retrieves a specific transaction
+     * @param identifier unique identifier for the transaction
+     * @return optional of the found transaction or empty optional
+     */
     Optional<Transaction> get(int identifier);
 
     /**
-     * Retrieve all transactions
-     * @return a list of all known transactions at this moment
+     * Retrieves all transactions
+     * @return a list of all stored transactions
      */
     List<Transaction> getAll();
 
-//    /**
-//     * Find all transactions belonging to a specific account
-//     * @param account The account to search txs for
-//     * @return mapping of transactions grouped by direction from or to that account
-//     */
-//    Map<Direction, List<Transaction>> find(UUID account);
-
+    /**
+     * Finds all transaction from or to a specific account
+     * @param account the account to find transactions for
+     * @return a list of all stored transaction of this account
+     */
     List<Transaction> find(UUID account);
 
-    enum Direction {
-        FROM, TO
-    }
 }

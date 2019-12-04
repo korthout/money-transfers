@@ -20,20 +20,20 @@ public class VavrListTransactionStore implements TransactionStore {
         this.internal = List.empty();
     }
 
-    // To make this class thread-safe,
-    // this is the only write method AND it is synchronized
-    @Override
-    public synchronized int add(final Transaction tx) {
-        internal = internal.append(tx);
-        return internal.size();
-    }
-
     /**
      * Clear the store, for easy testing.
      * Warning! Not thread-safe!
      */
     public void clear() {
         this.internal = List.empty();
+    }
+
+    // To make this class thread-safe,
+    // this is the only write method AND it is synchronized
+    @Override
+    public synchronized int add(final Transaction tx) {
+        internal = internal.append(tx);
+        return internal.size();
     }
 
     @Override
