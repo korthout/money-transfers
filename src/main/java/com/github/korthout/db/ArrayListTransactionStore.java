@@ -2,9 +2,7 @@ package com.github.korthout.db;
 
 import com.github.korthout.api.Transaction;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,13 +24,17 @@ public class ArrayListTransactionStore implements TransactionStore {
         return internal.size();
     }
 
-    @Override
+    /**
+     * Clear the store, for easy testing.
+     * Warning! Not thread-safe!
+     */
     public void clear() {
         internal.clear();
     }
 
     @Override
     public Optional<Transaction> get(final int identifier) {
+        // identifier is the storage size directly after the tx is stored
         final int index = identifier - 1;
         if (index < 0 || index >= internal.size()) {
             return Optional.empty();
@@ -46,19 +48,10 @@ public class ArrayListTransactionStore implements TransactionStore {
     }
 
     @Override
-    public Map<Direction, List<Transaction>> find(final UUID account) {
-        // todo push most of this implementation down to the resource class
-        Map<Direction, List<Transaction>> initialMap = new EnumMap<>(Direction.class);
-        initialMap.put(Direction.FROM, new ArrayList<>());
-        initialMap.put(Direction.TO, new ArrayList<>());
-        return this.getAll()
-                .stream()
+    public List<Transaction> find(final UUID account) {
+        return this.getAll().stream()
                 .filter(tx -> account.equals(tx.getFrom()) || account.equals(tx.getTo()))
-                .collect(Collectors.groupingBy(
-                        tx -> tx.getFrom().equals(account) ? Direction.FROM : Direction.TO,
-                        () -> initialMap,
-                        Collectors.toList()
-                ));
+                .collect(Collectors.toList());
     }
 
 }

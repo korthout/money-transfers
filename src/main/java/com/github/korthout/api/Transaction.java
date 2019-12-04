@@ -8,13 +8,13 @@ import javax.annotation.Generated;
 
 public class Transaction {
 
-    private final int amount;
+    private final long amount;
     private final UUID from;
     private final UUID to;
 
     @JsonCreator
     public Transaction(
-            @JsonProperty("amount") final int amount,
+            @JsonProperty("amount") final long amount,
             @JsonProperty("from") final UUID from,
             @JsonProperty("to") final UUID to
     ) {
@@ -24,7 +24,7 @@ public class Transaction {
     }
 
     @JsonProperty("amount")
-    public int getAmount() {
+    public long getAmount() {
         return amount;
     }
 
@@ -53,5 +53,15 @@ public class Transaction {
     @Override
     public int hashCode() {
         return Objects.hash(amount, from, to);
+    }
+
+    @Generated("IntelliJ IDEA 2019.3")
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "amount=" + amount +
+                ", from=" + from +
+                ", to=" + to +
+                '}';
     }
 }

@@ -1,8 +1,7 @@
 package com.github.korthout.resources;
 
 import com.github.korthout.api.Transaction;
-import com.github.korthout.db.ArrayListTransactionStore;
-import com.github.korthout.db.TransactionStore;
+import com.github.korthout.db.VavrListTransactionStore;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import java.net.URI;
 import java.util.List;
@@ -22,7 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TransactionResourceTest {
 
-    private static final TransactionStore TX_STORE = new ArrayListTransactionStore();
+    // use the class and not the interface directly for testing purposes
+    private static final VavrListTransactionStore TX_STORE = new VavrListTransactionStore();
 
     @ClassRule
     public static final ResourceTestRule RESOURCES = ResourceTestRule.builder()
@@ -114,18 +114,19 @@ public class TransactionResourceTest {
     public void canCorrectlyStoreThousandsOfConcurrentTransactions() {
         // make sure sender has enough available funds
         UUID sender = UUID.randomUUID();
-        TX_STORE.add(new Transaction(100000000, UUID.randomUUID(), sender));
+        TX_STORE.add(new Transaction(10000000, UUID.randomUUID(), sender));
 
         // concurrently send txs with amounts ranging from 1 to 5000
-        IntStream.range(1, 5000)
+        IntStream.range(1, 2000)
                 .parallel()
                 .mapToObj(i -> new Transaction(i, sender, UUID.randomUUID()))
                 .map(Entity::json)
                 .forEach(json -> request().post(json));
         // verify that all amounts had been stored exactly once
-        Map<Integer, List<Transaction>> allTxsGroupedByAmount = TX_STORE.getAll().stream()
+        Map<Long, List<Transaction>> allTxsGroupedByAmount = TX_STORE.getAll().stream()
+                .peek(System.out::println)
                 .collect(Collectors.groupingBy(Transaction::getAmount));
-        assertThat(allTxsGroupedByAmount.keySet()).hasSize(5000);
+        assertThat(allTxsGroupedByAmount.keySet()).hasSize(2000);
         assertThat(allTxsGroupedByAmount.values()).allSatisfy(
                 txsWithSpecificAmount -> assertThat(txsWithSpecificAmount).hasSize(1)
         );
