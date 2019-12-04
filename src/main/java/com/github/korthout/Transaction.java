@@ -5,19 +5,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Generated;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class Transaction {
 
-    private final long amount;
-    private final UUID from;
-    private final UUID to;
+    @Min(0) private final long amount;
+    @NotNull private final UUID from;
+    @NotNull private final UUID to;
 
     @JsonCreator
     public Transaction(
             @JsonProperty("amount") final long amount,
-            @JsonProperty("from") @NotNull final UUID from,
-            @JsonProperty("to") @NotNull final UUID to
+            @JsonProperty("from") final UUID from,
+            @JsonProperty("to") final UUID to
     ) {
         this.amount = amount;
         this.from = from;

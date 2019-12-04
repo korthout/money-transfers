@@ -3,13 +3,17 @@ package com.github.korthout;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import javax.annotation.Nullable;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
@@ -29,32 +33,27 @@ public class TransactionResource {
     }
 
     @GET
-    public List<Transaction> fetch() {
+    public List<Transaction> fetch(@QueryParam("account") @Nullable final UUID account) {
+        if (account != null) {
+            LOG.info("Fetching all transactions for account (id: {})", account);
+            return store.find(account);
+        }
         LOG.info("Fetching all transactions");
         return store.getAll();
     }
 
+    @GET
     @Path("/{index}")
-    public Optional<Transaction> fetch(@PathParam("index") int identifier) {
+    public Optional<Transaction> fetch(@PathParam("index") final int identifier) {
         LOG.info("Fetching transaction (id: {})", identifier);
         return store.get(identifier);
     }
 
     @POST
-    public Response add(final @Valid Transaction newTx) {
-        long availableFunds = store.find(newTx.getFrom())
-                .stream()
-                .mapToLong(tx -> tx.getFrom().equals(newTx.getFrom()) ? -tx.getAmount() : tx.getAmount())
-                .sum();
-        if (availableFunds < newTx.getAmount()) {
-            LOG.info("Unable to add new transaction: insufficient funds for account (id: {})", newTx.getFrom());
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Insufficient funds")
-                    .build();
-        }
+    public Response add(@Valid @NotNull final Transaction newTx) {
         int identifier = store.add(newTx);
         LOG.info("Added new transaction (id: {})", identifier);
-        URI location = URI.create(String.format("transaction/%d", identifier));
+        URI location = URI.create(String.format("transactions/%d", identifier));
         return Response.created(location).build();
     }
 }

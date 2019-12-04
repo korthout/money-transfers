@@ -1,6 +1,5 @@
 package com.github.korthout;
 
-import com.github.korthout.Transaction;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
