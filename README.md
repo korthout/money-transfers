@@ -55,4 +55,3 @@ will never change anymore. Writing needs to be done more carefully. No 2 write a
 simultaneously, because of a potential race condition.
 
 The rest of the application is stateless, and thus also thread-safe.
-

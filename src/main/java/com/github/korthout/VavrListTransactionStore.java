@@ -3,20 +3,25 @@ package com.github.korthout;
 import io.vavr.collection.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Thread-safe in-memory transaction store using vavr.
  */
 public class VavrListTransactionStore implements TransactionStore {
 
+    private final Lock lock;
+
     /**
-     * Mutable internal in-memory representation of the store
+     * Mutable in-memory representation of the store
      * using an immutable thread-safe functional List
      */
     private List<Transaction> internal;
 
     public VavrListTransactionStore() {
         this.internal = List.empty();
+        this.lock = new ReentrantLock();
     }
 
     /**
@@ -27,12 +32,15 @@ public class VavrListTransactionStore implements TransactionStore {
         this.internal = List.empty();
     }
 
-    // To make this class thread-safe,
-    // this is the only write method AND it is synchronized
     @Override
-    public synchronized int add(final Transaction tx) {
-        internal = internal.append(tx);
-        return internal.size();
+    public int add(final Transaction tx) {
+        lock.lock();
+        try {
+            internal = internal.append(tx);
+            return internal.size();
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
