@@ -1,6 +1,5 @@
-package com.github.korthout.db;
+package com.github.korthout;
 
-import com.github.korthout.api.Transaction;
 import io.vavr.collection.List;
 import java.util.Optional;
 import java.util.UUID;

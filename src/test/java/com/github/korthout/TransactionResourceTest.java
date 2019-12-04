@@ -1,7 +1,8 @@
-package com.github.korthout.resources;
+package com.github.korthout;
 
-import com.github.korthout.api.Transaction;
-import com.github.korthout.db.VavrListTransactionStore;
+import com.github.korthout.Transaction;
+import com.github.korthout.TransactionResource;
+import com.github.korthout.VavrListTransactionStore;
 import io.dropwizard.testing.junit.ResourceTestRule;
 import java.net.URI;
 import java.util.List;

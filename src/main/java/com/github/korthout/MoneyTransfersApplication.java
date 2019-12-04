@@ -1,7 +1,5 @@
 package com.github.korthout;
 
-import com.github.korthout.db.VavrListTransactionStore;
-import com.github.korthout.resources.TransactionResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;

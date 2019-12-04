@@ -1,4 +1,4 @@
-package com.github.korthout.api;
+package com.github.korthout;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

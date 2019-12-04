@@ -1,7 +1,5 @@
-package com.github.korthout.resources;
+package com.github.korthout;
 
-import com.github.korthout.api.Transaction;
-import com.github.korthout.db.TransactionStore;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
